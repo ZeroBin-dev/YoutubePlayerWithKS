@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<th:block th:replace="~{fragments/head.html :: headFragment}"/>
+<body>
+<div class="container">
+
+  <div class="well well-sm">
+    <div>
+      <strong>Search </strong>
+      <div class="btn-group">
+        <input type="text" id="keyword" placeholder="Search Keyword...">
+        <button onclick="searchVideo()">Search...</button>
+      </div>
+    </div>
+    <hr/>
+    <div>
+      <strong>Display </strong>
+      <div class="btn-group">
+        <a href="#" id="list" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-th-list">
+        </span>List</a> <a href="#" id="grid" class="btn btn-default btn-sm"><span
+        class="glyphicon glyphicon-th"></span>Grid</a>
+      </div>
+    </div>
+  </div>
+
+  <div id="products" class="row list-group">
+
+  </div>
+</div>
+<script>
+  $(document).ready(function () {
+    $('#list').click(function (event) {
+      event.preventDefault();
+      $('#products .item').addClass('list-group-item');
+    });
+    $('#grid').click(function (event) {
+      event.preventDefault();
+      $('#products .item').removeClass('list-group-item');
+      $('#products .item').addClass('grid-group-item');
+    });
+  });
+
+  function searchVideo() {
+    var $keyword = $('#keyword');
+
+    if(!$keyword || $keyword.val() === ''){
+      alert("Please enter keyword");
+      $keyword.focus();
+    } else {
+      const params = {
+        keyword : $keyword.val()
+      }
+      postApi('/youtube/search', params, onSuccess, onApiError);
+    }
+
+  }
+
+  function onSuccess(data){
+    var jsonString = JSON.stringify(data);
+
+    var parsedData = JSON.parse(jsonString);
+
+    // 파싱된 데이터를 사용하여 작업 수행
+    var str = '';
+    for (var i = 0; i < parsedData.length; i++) {
+      var item = parsedData[i];
+      str += '<div class="item  col-xs-4 col-lg-4" style="height: 400px">';
+      str += '  <div class="thumbnail" style="height: 100%">';
+      str += '    <img class="group list-group-image" src="'+item.thumbnail+'" alt=""/>';
+      str += '    <div class="caption">';
+      str += '      <h4 class="group inner list-group-item-heading">'+item.title+'</h4>';
+      str += '      <div class="row">';
+      str += '        <div class="col-xs-12 col-md-6">';
+      str += '          <p class="lead" style="font-size: 12pt">'+item.publishTime+'</p>';
+      str += '        </div>';
+      str += '      </div>';
+      str += '      <div class="row">';
+      str += '        <div class="col-xs-12 col-md-6">';
+      str += '          <a class="btn btn-success" href="'+item.videoUrl+'">Go to video</a>';
+      str += '        </div>';
+      str += '      </div>';
+      str += '    </div>';
+      str += '  </div>';
+      str += '</div>';
+    }
+
+    $("#products").html(str);
+  }
+
+</script>
+</body>
+</html>

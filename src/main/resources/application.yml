@@ -1,0 +1,32 @@
+spring:
+  thymeleaf:
+    enabled: true
+    cache: true
+    prefix: classpath:templates/
+    suffix: .html
+    check-template-location: true
+
+server:
+  port: 1220
+  servlet:
+    encoding:
+      charset: UTF-8
+
+# hibernate ????
+
+youtube:
+  api-key: AIzaSyANh6JIhDzL0EkBP554pWuOrOHDRX8XGIE
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "local"
+
+  datasource:
+    driver-class-name:
+---
+spring:
+  config:
+    activate:
+      on-profile: "prod"
